@@ -7,7 +7,7 @@
 | Cut + Paste                | Command + C / Command + Option + V                         |
 | ScreenShoot(Save to local) | `Shift-Command-3` `Shift-Command-4` `Shift-Command-5`      |
 | ScreenShoot(paste)         | `Shift-Option-Command-3`  3(full-screen) 4(portion) 5(app) |
-|                            |                                                            |
+| Go to a file path          | Finder `Command + Shift + G`                               |
 
 | Symbol            | Meaning                                    |
 | ----------------- | ------------------------------------------ |
@@ -79,6 +79,14 @@ ping raw.githubusercontent.com
 sudo brew install git
 ```
 
+##### Basic grammar
+
+```
+git log --oneline -5 // show last 5 commit log
+```
+
+
+
 ##### SetUp Git repository
 
 > https://blog.csdn.net/weixin_42280089/article/details/88937175
@@ -128,9 +136,16 @@ sudo brew install git
   git add . //add后面跟"."表明添加所有文件，如果只需要添加个别文件直接后面跟文件名，也可后面跟多个文件名
   git commit -m "first submit" //注释说明，每次提交新文件或更改的文件都需要添加注释
   git push -u origin master //将add的文件push到github仓库中去     --force
-  git pull
-  git push
   ```
+
+##### Push & Pull
+
+```
+git pull
+git push
+git branch -v
+git branch -vv
+```
 
 ##### Check Branch
 
@@ -143,7 +158,33 @@ git branch -m <old-name> <new-name> //non-head branch
 
 ```
 
+##### Merge branch
 
+```
+git switch main // merge always merge to the HEAD branch
+git merge test // the branch need to merge
+git push
+```
 
+##### Publish branch
 
+```
+git push -u origin <local-branch> // Upload a local branch for the first time
+```
+
+##### Tracking branch
+
+Connecting branches to each other
+
+```
+git branch --track <new-branch> origin/<base-branch>
+git checkout --track origin/<base-branch>
+```
+
+##### Delete branch
+
+```
+git branch -d <branch-name> // can't delete the current HEAD branch
+git push origin --delete branch_name // remove remote branch
+```
 
