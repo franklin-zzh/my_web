@@ -188,3 +188,7 @@ git branch -d <branch-name> // can't delete the current HEAD branch
 git push origin --delete branch_name // remove remote branch
 ```
 
+##### Branch Switch based on Commits
+
+When you switch between branches such as `main` and `test`, Git swaps the file contents to match the commit versions associated with each branch. For example, if you switch from `test` to `main`, any recent changes you made to `Command.md` on the `test` branch won’t appear in the `main` branch.
+
