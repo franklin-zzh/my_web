@@ -150,6 +150,10 @@ public class Main {
 
 ```
 
+> Array don't have its own methods; only inherited a few basic `Object` methods (e.g., `hashCode()`, `toString()`)
+
+
+
 ##### -基本数据类型
 
 - 6 种数字类型：
