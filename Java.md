@@ -56,6 +56,26 @@ Java开发工具包：包含 JRE(Java Runtime Environment)，编译器`javac`，
 
 利用 JVM 将 `.class` 文件 在不同系统平台(Windows, Mac, Linus) 运行
 
+> **流程图**
+
+```scss
+源码 (.java)
+   ↓ 编译 (javac)
+字节码 (.class)
+   ↓ 类加载子系统
+方法区(Metaspace) ← 类信息、常量池
+   ↓
+执行 new 指令
+   ↓
+堆(Heap) ← 创建对象实例
+   ↓
+栈(Stack) ← 创建栈帧，调用 <init> 构造方法
+   ↓
+程序计数器(PC) 指示下一条指令
+   ↓
+执行引擎解释或JIT编译执行
+```
+
 JVM uses both Interpreter && JIT
 
 | Execution mode    | How it runs                                                  | Speed | Who handles it   |
@@ -309,7 +329,9 @@ System.out.println(0 == x.compareTo(y)); /* true */
 
 `BigInteger`
 
-##### -JVM储存方式
+##### -JVM储存方式 
+
+> JVM 细节 见前面章节 — JVM vs. JDK vs. JRE
 
 > | Concept             | Description                                                  | Used by                                   |
 > | ------------------- | ------------------------------------------------------------ | ----------------------------------------- |
@@ -422,7 +444,15 @@ public class Config {
 }
 ```
 
-###### What does `static` used for
+> `Member variable` contains `instance variable` & `static variable`
+>
+> `static variable` belongs to `class`
+>
+> `instance variable` belongs to `object`
+
+
+
+###### `static`
 
 静态变量只会被分配一次内存，即使创建多个对象，这样可以节省内存。
 
@@ -448,14 +478,14 @@ static variable 需要通过类名访问，如`class.staticVar`
 
 **重载：**
 
-- 发生在同一个类中（或者父类和子类之间）
-- 方法名必须相同，参数列表必须不同
+- 发生在**同一个类**中（或者父类和子类之间）
+- 方法名必须相同，**参数**列表**必须不同**
 
 **重写：**
 
 - 父类与子类之间（存在继承关系）；
-- 方法名、参数列表**必须完全相同**。
-- 子类方法的返回类型必须与父类方法的返回类型**相同**，或者是其**子类**。
+- 方法名、**参数**列表**必须完全相同**。
+- 子类方法的**返回类型**必须与父类方法的返回类型**相同**，或者是其**子类**。
 
 ```java
 class Parent {
@@ -488,7 +518,9 @@ class Child extends Parent {
 }
 ```
 
-- 如果父类方法访问修饰符为 private/final/static 则子类就不能重写该方法
+**注意⚠️**
+
+- 如果父类方法访问修饰符为 **private/final/static** 则子类就不能重写该方法
 
 ```java
 class Parent {
@@ -499,7 +531,9 @@ class Child extends Parent {
 }
 ```
 
-- 构造方法无法被重写
+- **构造方法无法被重写**
+
+构造方法只属于定义它的那个类，因为无法继承父类构造方法，所以无法重写
 
 > 如果方法的返回值是引用类型，重写时是可以返回该引用类型的子类的。
 
@@ -516,6 +550,8 @@ class Child extends Parent {
 }
 
 ```
+
+
 
 #### Java基础(中)
 
@@ -629,6 +665,8 @@ public class Main {
 ```
 
 > 如果我们重载了有参的构造方法，记得都要把无参的构造方法也写出来（无论是否用到），因为这可以帮助我们在创建对象的时候少踩坑。
+>
+> **如果不写无参constructor，会编译报错**，当 `new Person()`
 
 ```java
 class Person {
@@ -656,7 +694,6 @@ class Person {
 }
 public class Main {
 	public static void main(String[] args) {
-		// 如果不写无参constructor，会编译报错
 		Person p = new Person();
 	}
 ```
@@ -700,7 +737,7 @@ Animal a = new Dog();   // 引用类型是 Animal，对象类型是 Dog
 **区别**：
 
 - **设计目的**：接口主要用于对类的行为进行约束，你实现了某个接口就具有了对应的行为。抽象类主要用于代码复用，强调的是所属关系。
-- **继承和实现**：一个类只能继承一个类（包括抽象类），因为 Java 不支持多继承。但一个类可以实现多个接口，一个接口也可以继承多个其他接口。
+- **继承和实现**：(`extends` & `implements`)一个类只能继承一个类（包括抽象类），因为 Java 不支持多继承。但一个类可以实现多个接口，一个接口也可以继承多个其他接口。
 - **成员变量**：接口中的成员变量只能是 `public static final` 类型的，不能被修改且必须有初始值。抽象类的成员变量可以有任何修饰符（`private`, `protected`, `public`），可以在子类中被重新定义或赋值。
 - 方法： 
   - Java 8 之前，接口中的方法默认是 `public abstract` ，也就是只能有方法声明。自 Java 8 起，可以在接口中定义 `default`（默认） 方法和 `static` （静态）方法。 自 Java 9 起，接口可以包含 `private` 方法。
@@ -891,7 +928,7 @@ public boolean equals(Object obj) {
 
 重写 `equals()` 时没有重写 `hashCode()` 方法的话，使用 `HashMap` 可能会出现什么问题？
 
-- 相同hashCode但因为为重写，导致存到不同的位置
+- 没有重写 `hashCode()` ，导致相同元素内容，存到不同的位置，导致多个`Tom`  key 出现
 - 当key为Object时，存在 `equals()`一致，但hashCode不一致，导致查空，这种问题比较隐蔽
 
 ```java

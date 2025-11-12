@@ -184,6 +184,14 @@ Maven坐标（Maven Coordinates） 是项目唯一标识
                 <artifactId>commons-xxx</artifactId>
             </exclusions>
         </dependency>
+        
+        //If just adding junit-jupiter-api, you cannot use junit-jupiter-params
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.13.4</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 ```
 
@@ -248,3 +256,63 @@ Maven坐标（Maven Coordinates） 是项目唯一标识
 > `类` 命名规范：XxxxxTest：`public class UserServiceTest`
 >
 > 内部方法命名规定：必须声明 `public void xxxxx（）`
+
+###### 常见注解
+
+<img src="/Users/franklin/Desktop/NO_Drive/Code/myWeb/Note/Screenshot/image-20251110184850931.png" alt="image-20251110184850931" style="zoom:50%;" />
+
+**测试执行相关注解**
+
+| 注解                 | 说明                                                         | 备注                                   |
+| -------------------- | ------------------------------------------------------------ | -------------------------------------- |
+| `@Test`              | 表示这是一个**测试方法**，JUnit 会自动识别并执行它。         | 最常见的注解，用于单元测试。           |
+| `@ParameterizedTest` | 表示这是一个**参数化测试方法**，即同一个测试方法会用不同参数运行多次。 | 使用这个注解后，不需要再加 `@Test`。   |
+| `@ValueSource`       | 指定参数化测试的**数据来源**，为测试方法提供多个输入值。     | 必须与 `@ParameterizedTest` 搭配使用。 |
+| `@DisplayName`       | 给测试类或测试方法取一个**更友好的名字**（默认是方法名）。   | 方便测试报告中显示更直观的名称。       |
+
+**生命周期（执行顺序）相关注解**
+
+| 注解          | 说明                               | 执行频率       | 常用用途                               |
+| ------------- | ---------------------------------- | -------------- | -------------------------------------- |
+| `@BeforeEach` | 在**每个测试方法执行前**运行一次   | 每个测试执行前 | 初始化测试资源（准备工作）             |
+| `@AfterEach`  | 在**每个测试方法执行后**运行一次   | 每个测试执行后 | 清理资源（释放工作）                   |
+| `@BeforeAll`  | 在**所有测试方法执行前**只运行一次 | 整个类前一次   | 全局初始化（例如启动数据库、加载配置） |
+| `@AfterAll`   | 在**所有测试方法执行后**只运行一次 | 整个类后一次   | 全局清理（例如关闭连接、释放资源）     |
+
+为何 `@BeforeAll` 的方法需要 `static` ？
+
+* 因为调用时没有实例存在
+
+> `static` :
+>
+> * 不依赖对象实例；
+> * 可以直接通过类调用（例如 `MyTestClass.beforeAll()`）；
+> * 能在实例创建之前被调用。
+
+
+
+
+
+###### `Assertion` 方法
+
+```
+assertEquals(Object expected, Object actual，String message) //检查两个值是否相等，不相等 返回错误信息（可隐藏）
+```
+
+```
+assertThrows(exceptionClass, executable)
+
+// expectedType 期望抛出的异常类型
+// executable Executable（函数式接口）() -> {...}
+public static <T extends Throwable> T assertThrows(
+        Class<T> expectedType,
+        Executable executable
+)
+// 示例
+assertThrows(IllegalArgumentException.class, () -> calculator.divide(10, 0));
+```
+
+> 所有assert都存在重载方法，可以不指定 `message` 
+>
+> * `assertEquals(Object expected, Object actual，String message)`
+> * `assertEquals(Object expected, Object actual)`

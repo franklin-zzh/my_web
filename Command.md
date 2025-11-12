@@ -1,3 +1,5 @@
+
+
 ## Command 
 
 ### Mac Command
@@ -8,8 +10,6 @@
 | ScreenShoot(Save to local) | `Shift-Command-3` `Shift-Command-4` `Shift-Command-5`      |
 | ScreenShoot(paste)         | `Shift-Option-Command-3`  3(full-screen) 4(portion) 5(app) |
 | Go to a file path          | Finder `Command + Shift + G`                               |
-|                            |                                                            |
-|                            |                                                            |
 
 | Symbol            | Meaning                                    |
 | ----------------- | ------------------------------------------ |
@@ -46,6 +46,9 @@ ls   # On macOS/Linux
 sudo mkdir 
 sudo mv
 
+cat /file
+sudo nano /file
+
 tar -xzf + `file-name`.tar.gz // extract a .tar.gz file
 ```
 
@@ -74,10 +77,11 @@ java -v
 * **编辑 `hosts` 文件**
 
 ```
-sudo nano /etc/hosts
+cat /etc/hosts //read file
+sudo nano /etc/hosts //edit it
 
 //文件末尾添加
-199.232.28.133 raw.githubusercontent.com
+199.232.28.133 raw.githubusercontent.com //IP could be old, if not updated concurrently
 ```
 
 * 按 `Ctrl + O` 保存文件。
@@ -86,7 +90,9 @@ sudo nano /etc/hosts
 * 刷新缓存
 
 ```
+sudo dscacheutil -flushcache
 sudo killall -HUP mDNSResponder
+
 ping raw.githubusercontent.com
 ```
 
@@ -94,9 +100,11 @@ ping raw.githubusercontent.com
 
 ##### Update Repository Name
 
+When using `SSH keys` , remember to use `git@github.com:`
+
 ```
 git remote -v // check current remote URL
-git remote set-url origin https://github.com/franklin-zzh/XXXXXX.git //Updated with the new project name
+git remote set-url origin git@github.com:franklin-zzh/XXXXXX.git //Updated with the new project name
 git remote -v
 ```
 
@@ -161,17 +169,20 @@ git log --oneline -5 // show last 5 commit log
   ssh -T git@github.com
   ```
 
-  * File synchronism: In Github repository, clone with HTTPS
 
-  ```
-  git init
-  git remote add origin https://github.com/franklin-zzh/my_web.git //https 添加远程连接地址
-  git remote set-url origin git@github.com:franklin-zzh/my_web.git //ssh
-  git pull origin master
-  git add . //add后面跟"."表明添加所有文件，如果只需要添加个别文件直接后面跟文件名，也可后面跟多个文件名
-  git commit -m "first submit" //注释说明，每次提交新文件或更改的文件都需要添加注释
-  git push -u origin master //将add的文件push到github仓库中去     --force
-  ```
+##### File synchronism:
+
+In Github repository, clone with ` HTTPS` or `SSH`
+
+```
+git init
+git remote add origin https://github.com/franklin-zzh/my_web.git //https 添加远程连接地址
+git remote set-url origin git@github.com:franklin-zzh/my_web.git //ssh
+git pull origin main
+git add . //add后面跟"."表明添加所有文件，如果只需要添加个别文件直接后面跟文件名，也可后面跟多个文件名
+git commit -m "first submit" //注释说明，每次提交新文件或更改的文件都需要添加注释
+git push -u origin main //将add的文件push到github仓库中去     --force
+```
 
 ##### Push & Pull
 
@@ -289,6 +300,77 @@ When you switch between branches such as `main` and `test`, Git swaps the file c
 
 
 
+### - MySQL
+
+##### Set up
+
+```bash
+cd usr/local/mysql 
+
+nano ~/.zshrc
+export PATH="/usr/local/mysql/bin:$PATH"
+source ~/.zshrc
+which mysql
+
+mysql --version
+mysql -u root -p
+
+
+
+```
+
+
+
+##### 自启动
+
+```
+which mysqld
+ls /Library/LaunchDaemons/com.mysql.mysql.plist //检查是否存在
+sudo nan
+```
+
+o /Library/LaunchDaemons/com.mysql.mysqld.plist //不存在创建
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+  <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+      <plist version="1.0">
+      <dict>
+      <key>Label</key>
+      <string>com.mysql.mysqld</string>
+      <key>ProgramArguments</key>
+        <array>
+        <string>/usr/local/mysql/bin/mysqld_safe</string>
+        <string>--user=mysql</string>
+        </array>
+      <key>RunAtLoad</key>
+        <true/>
+      <key>KeepAlive</key>
+        <true/>
+      <key>WorkingDirectory</key>
+      <string>/usr/local/mysql</string>
+      </dict>
+    </plist>
+```
+
+```bash
+sudo chown root:wheel /Library/LaunchDaemons/com.mysql.mysqld.plist
+sudo launchctl load -w /Library/LaunchDaemons/com.mysql.mysqld.plist //加载服务并设置权限
+sudo launchctl list | grep mysql //验证是否生效
+mysql -u root -p -e "STATUS;" //重启 Mac 后检查 MySQL 是否自动运行：
+```
+
+
+
+```bash
+sudo /usr/local/mysql/support-files/mysql.server start
+
+```
+
+
+
+
+
 ### - Java & IntelliJ IDE
 
 ```
@@ -358,14 +440,4 @@ javac -version
 最后新建module（模块）来控制不同层
 
 
-
-### - MySQL
-
-```
-sc query MySQL80
-
-sc config MySQL80 start= auto
-
-net start MySQL80
-```
 
